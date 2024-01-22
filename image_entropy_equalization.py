@@ -16,12 +16,6 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
      
 
   def fit(self, X, y=None):
-    acceptable_methods = ["entropy", "class", "all"]
-    if self.method not in acceptable_methods:
-      raise Exception("Methods are not acceptable, methods should be one of the following: " + str(acceptable_methods))
-    if self.train is None:
-      raise Exception("train is None")
-      
     if self.method == "entropy":
       return self.fit_entropy(self, X, self.entropy_value)
     elif self.method == "class":
@@ -30,7 +24,8 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
       return self.fit_all(self, X)
     
     
-  def fit_entropy(self, train, entropy_value:int):
+  def fit_entropy(self, X, entropy_value:int):
+    train=X
     entropy = entropy_value
     area=2**entropy
     Q=int(train.shape[1]*train.shape[2]/area)
@@ -47,10 +42,11 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
     self.pixel_set = pixel_set
     return self
   
-  def fit_class(self, train, labels, label_value):
+  def fit_class(self, X, labels, label_value):
     if label_value not in labels:
       raise Exception("Label_value not in labels")
 
+    train=X
     x_train=train[labels==label_value]
     pixel_list=dict()
     for n in range(256):
@@ -78,7 +74,8 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
     self.pixel_set = pixel_set
     return self
   
-  def fit_all(self, train):
+  def fit_all(self, X):
+    train=X
     x_train=train
     pixel_list=dict()
     for n in range(256):
