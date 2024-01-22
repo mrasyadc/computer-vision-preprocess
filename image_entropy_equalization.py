@@ -17,14 +17,14 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
 
   def fit(self, X, y=None):
     if self.method == "entropy":
-      return self.fit_entropy(self, X, self.entropy_value)
+      return self.fit_entropy(X, self.entropy_value)
     elif self.method == "class":
-       return self.fit_class(self, X, y, self.label_value)
+       return self.fit_class(X, y, self.label_value)
     elif self.method == "all":
-      return self.fit_all(self, X)
+      return self.fit_all(X)
     
     
-  def fit_entropy(self, X, entropy_value:int):
+  def fit_entropy(X, entropy_value:int):
     train=X
     entropy = entropy_value
     area=2**entropy
@@ -42,7 +42,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
     self.pixel_set = pixel_set
     return self
   
-  def fit_class(self, X, labels, label_value):
+  def fit_class(X, labels, label_value):
     if label_value not in labels:
       raise Exception("Label_value not in labels")
 
@@ -74,7 +74,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
     self.pixel_set = pixel_set
     return self
   
-  def fit_all(self, X):
+  def fit_all(X):
     train=X
     x_train=train
     pixel_list=dict()
