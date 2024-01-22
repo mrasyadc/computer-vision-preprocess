@@ -4,13 +4,20 @@ class ImageEntropyEqualization:
   def __init__(self):
     self.pixel_set = []
 
-  def fit(self, train, labels, method, entropy_value:int, label_value):
+  def fit(self, train=None, labels=None, method=None, entropy_value:int=None, label_value=None):
+    acceptable_methods = ["entropy", "class", "all"]
+    if method not in acceptable_methods:
+      raise Exception("Methods are not acceptable, methods should be one of the following: " + str(acceptable_methods))
+    if train is None:
+      raise Exception("train is None")
+      
     if method == "entropy":
       return self.fit_entropy(train, entropy_value)
     elif method == "class":
        return self.fit_class(train, labels, label_value)
     elif method == "all":
       return self.fit_all(train)
+    
     
   def fit_entropy(self, train, entropy_value:int):
     entropy = entropy_value
@@ -30,6 +37,9 @@ class ImageEntropyEqualization:
     return self
   
   def fit_class(self, train, labels, label_value):
+    if label_value not in labels:
+      raise Exception("Label_value not in labels")
+
     x_train=train[labels==label_value]
     pixel_list=dict()
     for n in range(256):
