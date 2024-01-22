@@ -1,22 +1,33 @@
 import numpy as np
+from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin
 
-class ImageEntropyEqualization:
-  def __init__(self):
+class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstimator):
+
+  _parameter_constraints: dict = {
+    "method": ["entropy", "class", "all"],
+    "entropy_value": [1, 2, 3, 4, 5, 6, 7, 8],
+    "label_value": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  }
+  def __init__(self, method:str=None, entropy_value:int=None, label_value:int=None):
     self.pixel_set = []
+    self.method = method
+    self.entropy_value = entropy_value
+    self.label_value = label_value
+     
 
-  def fit(self, train=None, labels=None, method=None, entropy_value:int=None, label_value=None):
+  def fit(self, X, y=None):
     acceptable_methods = ["entropy", "class", "all"]
-    if method not in acceptable_methods:
+    if self.method not in acceptable_methods:
       raise Exception("Methods are not acceptable, methods should be one of the following: " + str(acceptable_methods))
-    if train is None:
+    if self.train is None:
       raise Exception("train is None")
       
-    if method == "entropy":
-      return self.fit_entropy(train, entropy_value)
-    elif method == "class":
-       return self.fit_class(train, labels, label_value)
-    elif method == "all":
-      return self.fit_all(train)
+    if self.method == "entropy":
+      return self.fit_entropy(self, X, self.entropy_value)
+    elif self.method == "class":
+       return self.fit_class(self, X, y, self.label_value)
+    elif self.method == "all":
+      return self.fit_all(self, X)
     
     
   def fit_entropy(self, train, entropy_value:int):
@@ -95,10 +106,11 @@ class ImageEntropyEqualization:
     self.pixel_set = pixel_set
     return self
   
-  def fit_transform(self, train, labels, method, entropy_value:int, label_value):
-    return self.fit(train, labels, method, entropy_value, label_value).transform(train, train, labels)
+  # def fit_transform(self, train, labels, method, entropy_value:int, label_value):
+  #   return self.fit(train, labels, method, entropy_value, label_value).transform(train, train, labels)
     
-  def transform(self, x_test, test_labels):
+  def transform(self, X):
+    x_test=X
     pixel_set = self.pixel_set
     equalized_test=np.zeros([x_test.shape[0],x_test.shape[1]*x_test.shape[2]])
     a=x_test.reshape(-1,x_test.shape[1]*x_test.shape[2])
@@ -108,4 +120,4 @@ class ImageEntropyEqualization:
         equalized_test[ind2==i]=int(pixel_set[i])
     equalized_test=equalized_test.reshape(x_test.shape[0],x_test.shape[1],x_test.shape[2])
 
-    return equalized_test, test_labels
+    return equalized_test
