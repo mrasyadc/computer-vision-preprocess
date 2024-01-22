@@ -24,7 +24,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
         if self.method == "entropy":
             if self.entropy_value not in self._parameter_constraints["entropy_value"]:
                 raise ValueError(
-                    f"Entropy value: {self.entropy_value} is not in {str(self._parameter_constraints['entropy_value'])}")
+                    f"Entropy value:{self.entropy_value} is not in {str(self._parameter_constraints['entropy_value'])}")
             self._fit_entropy(X, self.entropy_value)
         elif self.method == "class":
             if self.label_value not in y:
