@@ -12,7 +12,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
     }
 
     def __init__(self, *, method: str = None, entropy_value: int = None, label_value: int = None):
-        self.pixel_set = []
+        self.pixel_set_ = []
         self.method = method
         self.entropy_value = entropy_value
         self.label_value = label_value
@@ -47,7 +47,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
                 for i in range(Q):
                     pixel_set.append(n)
         # side effect set the pixel_set
-        self.pixel_set = pixel_set
+        self.pixel_set_ = pixel_set
 
     def _fit_class(self, X, labels, label_value):
         train = X
@@ -75,7 +75,7 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
                 pixel_set.append(num)
 
         # side effect set the pixel_set
-        self.pixel_set = pixel_set
+        self.pixel_set_ = pixel_set
 
     def _fit_all(self, X):
         train = X
@@ -103,11 +103,11 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
                 pixel_set.append(num)
 
         # side effect set the pixel_set
-        self.pixel_set = pixel_set
+        self.pixel_set_ = pixel_set
 
     def transform(self, X):
         x_test = X
-        pixel_set = self.pixel_set
+        pixel_set = self.pixel_set_
         equalized_test = np.zeros([x_test.shape[0], x_test.shape[1] * x_test.shape[2]])
         a = x_test.reshape(-1, x_test.shape[1] * x_test.shape[2])
         ind = np.argsort(a, axis=1, kind="mergesort")
