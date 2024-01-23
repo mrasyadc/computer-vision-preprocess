@@ -1,8 +1,7 @@
+from numbers import Integral
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin, _fit_context
-from sklearn.utils._param_validation import StrOptions, Options, validate_params
-from sklearn.utils.validation import check_is_fitted
-from numbers import Integral
+from sklearn.utils._param_validation import StrOptions, Options
 
 
 class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstimator):
