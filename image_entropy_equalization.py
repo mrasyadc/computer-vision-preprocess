@@ -1,38 +1,36 @@
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin
+from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin, _fit_context
+from sklearn.utils._param_validation import StrOptions, Options, validate_params
+from sklearn.utils.validation import check_is_fitted
+from numbers import Integral
 
 
 class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstimator):
     _parameter_constraints: dict = {
-        "method": ["entropy", "class", "all"],
-        "entropy_value": [2, 3, 4, 5, 6, 7, 8, 9],
-        "label_value": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        "method": [StrOptions({"entropy", "class", "all"})],
+        "entropy_value": [Options(Integral, {2, 3, 4, 5, 6, 7, 8, 9}), None],
+        "label_value": [Options(Integral, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), None]
     }
 
     def __init__(self, *, method: str = None, entropy_value: int = None, label_value: int = None):
-        allowed_methods = self._parameter_constraints["method"]
-        if method not in allowed_methods:
-            print("error", method)
-            raise ValueError(f"Method {method} is not in allowed_methods {str(allowed_methods)}")
-
         self.pixel_set = []
         self.method = method
         self.entropy_value = entropy_value
         self.label_value = label_value
 
+    @_fit_context(prefer_skip_nested_validation=True)
     def fit(self, X, y=None):
         if self.method == "entropy":
-            if self.entropy_value not in self._parameter_constraints["entropy_value"]:
-                raise ValueError(
-                    f"Entropy value:{self.entropy_value} is not in {str(self._parameter_constraints['entropy_value'])}")
+            if self.entropy_value is None:
+                raise ValueError("entropy_value is None, please set the entropy_value")
             self._fit_entropy(X, self.entropy_value)
         elif self.method == "class":
-            if self.label_value not in y:
-                raise ValueError(f"label_value: [{self.label_value}] is not in the labels: {str(y)}, change the "
-                                 f"label_value in class definition")
+            if self.label_value is None:
+                raise ValueError("label_value is None, please set the label_value")
             self._fit_class(X, y, self.label_value)
         elif self.method == "all":
             self._fit_all(X)
+
         return self
 
     def _fit_entropy(self, X, entropy_value: int):
