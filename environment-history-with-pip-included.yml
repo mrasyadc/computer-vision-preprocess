@@ -1,0 +1,16 @@
+name: cv
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - numpy
+  - scikit-learn
+  - jupyter
+  - tensorflow
+  - matplotlib
+  - pandas
+  - pip:
+    - imbalanced-learn
+    - imblearn
+    - imutils
+prefix: /Users/muhammadrasyadcaesarardhi/miniconda3/envs/cv
