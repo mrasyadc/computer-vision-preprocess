@@ -1,6 +1,6 @@
 from numbers import Integral
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin, _fit_context
+from sklearn.base import BaseEstimator, TransformerMixin, OneToOneFeatureMixin
 from sklearn.utils._param_validation import StrOptions, Options
 
 
@@ -17,7 +17,6 @@ class ImageEntropyEqualization(OneToOneFeatureMixin, TransformerMixin, BaseEstim
         self.entropy_value = entropy_value
         self.label_value = label_value
 
-    @_fit_context(prefer_skip_nested_validation=True)
     def fit(self, X, y=None):
         if self.method == "entropy":
             if self.entropy_value is None:

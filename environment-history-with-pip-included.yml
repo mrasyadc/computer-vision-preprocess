@@ -9,6 +9,7 @@ dependencies:
   - tensorflow
   - matplotlib
   - pandas
+  - scikit-image
   - pip:
     - imbalanced-learn
     - imblearn
